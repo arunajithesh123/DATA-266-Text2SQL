@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "animated-joy-458320-k6",
+  "private_key_id": "24b872eb8f10ed5455f76976132e1d35ca949216",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDPlwph69J1C4ck\nRuyvPsoC/hlC6aG8bG/pgHFzW42sKyDNCNv5h1t6HFu4kOIkXe1xWGLf4hwBdTb5\nSndICGtHYz96HdiCv4PPgJL4zT8IEZHHGYocvKrTYMF+AR5lnBdsyKYioKTiut5q\nfJZ6pc6FfK5GRWMIlp0vNLV+YYs7CJLQylYB62fTNRqqWHohK7+NkPpjXT7RgTas\nmB4oktmeOecLQ4/Ukk+SUfGnF4oetrOmB5It3ux4wTefMcs5oxj00T+h8m9vo98h\nSDKCoBVs/hMKDW2RG4iYu9BmmKQUA98IcvN8HW+em5hcvS5m4136GwDmpLLvi476\ntigyGynzAgMBAAECggEAQzFThgCL/aC+nIpsgAjl4HQY/ySaWmALFVyi3EENKWZI\nVrWAZlNe07asJaCX4keY3LBMSMVqZTpokeZ9l45KEzBX0pIoi6Gr65VlfS0KMvVk\n5zooD0cuT/8ogj2gdilBF9AWnmy7EjyEU5mCJ67VmzWRP2OkO5psxGPeP0sZgwCd\nBesix+h1yEomE8YAHARYD6LoO65bX1+t/s0+3Vc2knNaYmiM+7EvKAfZIUE2pOU8\nmZhTPGsbDTv6JEzesLkPICTqTvbJJzZHf8eJEorRVJOQB5J6wHXnfZjeegXUebI4\nK2p24DNpYqw8VNf5HAeWiLnMDyeYrtZr7gWntJZ1yQKBgQDxqdQnmgb9xr1zBBgO\n8MhmHYO/USsQ/MEAfZI/Pj/Dlr5vJ5YOCfG5KjwRsV9mIXhG8PUqvPSlOdqXHTm1\nen6AVrhyyrMHfzQUuFF5WKC9nYqDPFNNjFuEqeqyWLZsjbD/hvet3IZwUN9yJgtd\nfdkG7q68U7DIx0iTG340eH/fTQKBgQDb57wvjUCImJQbYhcZWu9EAUqTBzT6aYmW\nTNDriySKYa4SXRI/HMv5XLefC2CZmnS/xhznw5PK9vBJ+ezyPDgvOYJOS+WCcNLc\nZx3vKvCoXz5oGRkb5Fn35RwbhXA3Q9H82QDsHllxaxbN+JCCPQ/cQqFetsyTIRFc\n3qgIEaEOPwKBgGBOAorpmeGmQrdEKWZC1EnFd0xVx2jUoQFWCWMEppqGR0u6pdTg\nZ6EX0KpoWhE0Q19aBQnMFV6G6LKR5f6JW0I/zO+KEcBqE9IyBd3q0NvfnWRhNP1R\ncuMyZ6I9Mi2eZavfGHMDz9uQjwtJV/wg+80Eb0QDwg6xRB3Dtg6o+qR9AoGBAKKf\nB6KesbeSJgzuCCj+/2vqDI0YSkxY2Z+lpOZbWqVfQQxheYnksM7yivP5xPEysN3V\nEzEth9ETtnTudxRYBjCeNcfTBqHk73qAYzmoJppM/Oicjt36i7Hv405S6r5j0BlN\nHQqAEyL1z8J36930bBM1zwIs6rJvRNjJ67cz2kefAoGBANV4+BvK1E5QnNrK/e3n\nH3Qlg0L7xAFA+OcCvelC0VZEt5HcNDwrxbney92PFq/tY2Ib8X/ULIdOa6zz/Ucg\nAtQM5SRMevE3WyPQF2Spt17r75glPnqAW/t+eDqCjE7lKOdX/hWXseChW52ED+Rk\nlovaxUw5XrQKsLsD8Gpqn9zS\n-----END PRIVATE KEY-----\n",
+  "client_email": "text-to-sql-service@animated-joy-458320-k6.iam.gserviceaccount.com",
+  "client_id": "104099489206295100146",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/text-to-sql-service%40animated-joy-458320-k6.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

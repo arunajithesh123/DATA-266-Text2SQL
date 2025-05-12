@@ -1,0 +1,9 @@
+Metric,Original Model,Fine-tuned Model,Difference
+Model Size (GB),13.4888,13.4926,0.03%
+Total Parameters (B),7.2417,7.2417,0.00%
+Trainable Parameters (B),7.2417,7.2417,0.00%
+Trainable Parameters (%),100.0000,100.0000,0.00%
+Inference Latency (s),4.1608,2.7620,-33.62%
+Tokens per Second,24.0338,23.9677,-0.27%
+GPU Memory Allocated (GB),13.4967,13.4967,0.00%
+GPU Memory Reserved (GB),13.5117,13.5117,0.00%

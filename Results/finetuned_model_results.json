@@ -1,0 +1,805 @@
+[
+  {
+    "id": 0,
+    "question": "When Essendon played away; where did they play?",
+    "context": "CREATE TABLE table_name_50 (venue VARCHAR, away_team VARCHAR)",
+    "gold_query": "SELECT venue FROM table_name_50 WHERE away_team = \"essendon\"",
+    "predicted_query": "SELECT venue FROM table_name_50 WHERE away_team = \"essendon\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 1,
+    "question": "What is the lowest numbered game against Phoenix with a record of 29-17?",
+    "context": "CREATE TABLE table_name_61 (game INTEGER, opponent VARCHAR, record VARCHAR)",
+    "gold_query": "SELECT MIN(game) FROM table_name_61 WHERE opponent = \"phoenix\" AND record = \"29-17\"",
+    "predicted_query": "SELECT MIN(game) FROM table_name_61 WHERE opponent = \"phoenix\" AND record = \"29-17\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 2,
+    "question": "Who did the Texan's play on Week 4?",
+    "context": "CREATE TABLE table_name_37 (opponent VARCHAR, week VARCHAR)",
+    "gold_query": "SELECT opponent FROM table_name_37 WHERE week = \"4\"",
+    "predicted_query": "SELECT opponent FROM table_name_37 WHERE week = 4;",
+    "exact_match": false,
+    "token_overlap": 0.875,
+    "component_accuracy": 0.6666666666666666,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 0.6666666666666666
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 3,
+    "question": "Which Points have Touchdowns larger than 0, and an Extra points smaller than 0?",
+    "context": "CREATE TABLE table_name_70 (points INTEGER, touchdowns VARCHAR, extra_points VARCHAR)",
+    "gold_query": "SELECT SUM(points) FROM table_name_70 WHERE touchdowns > 0 AND extra_points < 0",
+    "predicted_query": "SELECT SUM(points) FROM table_name_70 WHERE touchdowns > 0 AND extra_points < 0;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 4,
+    "question": "What is the name of the player who is Sco and moving to greenock morton in the summer?",
+    "context": "CREATE TABLE table_name_83 (name VARCHAR, moving_to VARCHAR, nat VARCHAR, transfer_window VARCHAR)",
+    "gold_query": "SELECT name FROM table_name_83 WHERE nat = \"sco\" AND transfer_window = \"summer\" AND moving_to = \"greenock morton\"",
+    "predicted_query": "SELECT name FROM table_name_83 WHERE nat = \"sco\" AND transfer_window = \"summer\" AND moving_to = \"greenock morton\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 5,
+    "question": "Of all the contestants who got voted, what is the contestant number and name of the contestant who got least votes?",
+    "context": "CREATE TABLE votes (contestant_number VARCHAR); CREATE TABLE contestants (contestant_number VARCHAR, contestant_name VARCHAR)",
+    "gold_query": "SELECT T1.contestant_number, T1.contestant_name FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number = T2.contestant_number GROUP BY T1.contestant_number ORDER BY COUNT(*) LIMIT 1",
+    "predicted_query": "SELECT T1.contestant_number, T1.contestant_name FROM contestants AS T1 JOIN votes AS T2 ON T1.contestant_number = T2.contestant_number GROUP BY T1.contestant_number ORDER BY COUNT(*) LIMIT 1;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "group_by": 1.0,
+      "order_by": 1.0,
+      "limit": 1.0,
+      "join": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 6,
+    "question": "Which venue had the result 7-1?",
+    "context": "CREATE TABLE table_name_50 (venue VARCHAR, result VARCHAR)",
+    "gold_query": "SELECT venue FROM table_name_50 WHERE result = \"7-1\"",
+    "predicted_query": "SELECT venue FROM table_name_50 WHERE result = \"7-1\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 7,
+    "question": "What did the tournament that got an A in 1945 get in 1949?",
+    "context": "CREATE TABLE table_name_22 (Id VARCHAR)",
+    "gold_query": "SELECT 1949 FROM table_name_22 WHERE 1945 = \"a\"",
+    "predicted_query": "SELECT 1949 FROM table_name_22 WHERE 1945 = \"a\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 8,
+    "question": "Find the states where have the colleges whose enrollments are less than the largest size.",
+    "context": "CREATE TABLE college (state VARCHAR, enr INTEGER)",
+    "gold_query": "SELECT DISTINCT state FROM college WHERE enr < (SELECT MAX(enr) FROM college)",
+    "predicted_query": "SELECT state FROM college WHERE enr < (SELECT MAX(enr) FROM college);",
+    "exact_match": false,
+    "token_overlap": 0.9090909090909091,
+    "component_accuracy": 0.6666666666666666,
+    "component_scores": {
+      "select": 0.5,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 9,
+    "question": "What is the name of the episode that had 9.89 million U.S. viewers?",
+    "context": "CREATE TABLE table_24648983_1 (title VARCHAR, us_viewers__million_ VARCHAR)",
+    "gold_query": "SELECT title FROM table_24648983_1 WHERE us_viewers__million_ = \"9.89\"",
+    "predicted_query": "SELECT title FROM table_24648983_1 WHERE us_viewers__million_ = \"9.89\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 10,
+    "question": "What are the names of the workshop groups that have bookings with status code \"stop\"?",
+    "context": "CREATE TABLE Bookings (Workshop_Group_ID VARCHAR, Status_Code VARCHAR); CREATE TABLE Drama_Workshop_Groups (Store_Name VARCHAR, Workshop_Group_ID VARCHAR)",
+    "gold_query": "SELECT T2.Store_Name FROM Bookings AS T1 JOIN Drama_Workshop_Groups AS T2 ON T1.Workshop_Group_ID = T2.Workshop_Group_ID WHERE T1.Status_Code = \"stop\"",
+    "predicted_query": "SELECT T1.Store_Name FROM Drama_Workshop_Groups AS T1 JOIN Bookings AS T2 ON T1.Workshop_Group_ID = T2.Workshop_Group_ID WHERE T2.Status_Code = \"stop\";",
+    "exact_match": false,
+    "token_overlap": 0.875,
+    "component_accuracy": 0.0,
+    "component_scores": {
+      "select": 0.0,
+      "from": 0.6666666666666666,
+      "where": 0.6666666666666666,
+      "join": 0.8571428571428571
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 11,
+    "question": "Where was the opponent Germany?",
+    "context": "CREATE TABLE table_name_96 (location VARCHAR, opponenent VARCHAR)",
+    "gold_query": "SELECT location FROM table_name_96 WHERE opponenent = \"germany\"",
+    "predicted_query": "SELECT location FROM table_name_96 WHERE opponenent = \"germany\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 12,
+    "question": "Name the candidates for result of lost renomination democratic loss",
+    "context": "CREATE TABLE table_1342149_24 (candidates VARCHAR, result VARCHAR)",
+    "gold_query": "SELECT candidates FROM table_1342149_24 WHERE result = \"Lost renomination Democratic loss\"",
+    "predicted_query": "SELECT candidates FROM table_1342149_24 WHERE result = \"Lost renomination Democratic loss\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 13,
+    "question": "What is the number of party in the arkansas 1 district",
+    "context": "CREATE TABLE table_1341930_5 (party VARCHAR, district VARCHAR)",
+    "gold_query": "SELECT COUNT(party) FROM table_1341930_5 WHERE district = \"Arkansas 1\"",
+    "predicted_query": "SELECT COUNT(party) FROM table_1341930_5 WHERE district = \"Arkansas 1\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 14,
+    "question": "How many alt names does 1964-011a have?",
+    "context": "CREATE TABLE table_12141496_1 (alt_name VARCHAR, id VARCHAR)",
+    "gold_query": "SELECT COUNT(alt_name) FROM table_12141496_1 WHERE id = \"1964-011A\"",
+    "predicted_query": "SELECT COUNT(alt_name) FROM table_12141496_1 WHERE id = \"1964-011A\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 15,
+    "question": "Who is the opponent of the game played on November 20, 1995?",
+    "context": "CREATE TABLE table_name_66 (opponent VARCHAR, date VARCHAR)",
+    "gold_query": "SELECT opponent FROM table_name_66 WHERE date = \"november 20, 1995\"",
+    "predicted_query": "SELECT opponent FROM table_name_66 WHERE date = \"november 20, 1995\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 16,
+    "question": "What is the position of tickets sold/available when the sellout is 82%?",
+    "context": "CREATE TABLE table_16331025_2 (tickets_sold___available VARCHAR, sellout___percentage_ VARCHAR)",
+    "gold_query": "SELECT COUNT(tickets_sold___available) FROM table_16331025_2 WHERE sellout___percentage_ = \"82%\"",
+    "predicted_query": "SELECT tickets_sold___available FROM table_16331025_2 WHERE sellout___percentage_ = \"82%\";",
+    "exact_match": false,
+    "token_overlap": 0.875,
+    "component_accuracy": 0.6666666666666666,
+    "component_scores": {
+      "select": 0.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 17,
+    "question": "Which College/Junior/Club Team (League) did the player in round 6 play for?",
+    "context": "CREATE TABLE table_name_98 (college_junior_club_team__league_ VARCHAR, round VARCHAR)",
+    "gold_query": "SELECT college_junior_club_team__league_ FROM table_name_98 WHERE round = \"6\"",
+    "predicted_query": "SELECT college_junior_club_team__league_ FROM table_name_98 WHERE round = 6;",
+    "exact_match": false,
+    "token_overlap": 0.875,
+    "component_accuracy": 0.6666666666666666,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 0.6666666666666666
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 18,
+    "question": "How many in the introduced section had Fokker as a manufacturer, a quantity of 5, and retired later than 1999?",
+    "context": "CREATE TABLE table_name_94 (introduced INTEGER, retired VARCHAR, manufacturer VARCHAR, quantity VARCHAR)",
+    "gold_query": "SELECT SUM(introduced) FROM table_name_94 WHERE manufacturer = \"fokker\" AND quantity = 5 AND retired > 1999",
+    "predicted_query": "SELECT SUM(introduced) FROM table_name_94 WHERE manufacturer = \"fokker\" AND quantity = 5 AND retired > 1999;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 19,
+    "question": "Where was the audition venue where Peninha was the guest fourth judge?",
+    "context": "CREATE TABLE table_27615445_1 (audition_venue VARCHAR, guest_fourth_judge VARCHAR)",
+    "gold_query": "SELECT audition_venue FROM table_27615445_1 WHERE guest_fourth_judge = \"Peninha\"",
+    "predicted_query": "SELECT audition_venue FROM table_27615445_1 WHERE guest_fourth_judge = \"Peninha\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 20,
+    "question": "Who was the runner-up in the Memorial Tournament?",
+    "context": "CREATE TABLE table_1602858_1 (runner_s__up VARCHAR, tournament VARCHAR)",
+    "gold_query": "SELECT runner_s__up FROM table_1602858_1 WHERE tournament = \"Memorial tournament\"",
+    "predicted_query": "SELECT runner_s__up FROM table_1602858_1 WHERE tournament = \"Memorial Tournament\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 21,
+    "question": "What is the number of bonus points when there are 2 drawn and the points against is 599?",
+    "context": "CREATE TABLE table_name_83 (bonus_points VARCHAR, drawn VARCHAR, points_against VARCHAR)",
+    "gold_query": "SELECT bonus_points FROM table_name_83 WHERE drawn = \"2\" AND points_against = \"599\"",
+    "predicted_query": "SELECT bonus_points FROM table_name_83 WHERE drawn = 2 AND points_against = 599;",
+    "exact_match": false,
+    "token_overlap": 0.8181818181818182,
+    "component_accuracy": 0.6666666666666666,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 0.6666666666666666
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 22,
+    "question": "Which game was a Platformer?",
+    "context": "CREATE TABLE table_name_90 (game VARCHAR, genre VARCHAR)",
+    "gold_query": "SELECT game FROM table_name_90 WHERE genre = \"platformer\"",
+    "predicted_query": "SELECT game FROM table_name_90 WHERE genre = \"platformer\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 23,
+    "question": "Who was the individual in the event of 1998 Pokljuka?",
+    "context": "CREATE TABLE table_name_33 (individual VARCHAR, event VARCHAR)",
+    "gold_query": "SELECT individual FROM table_name_33 WHERE event = \"1998 pokljuka\"",
+    "predicted_query": "SELECT individual FROM table_name_33 WHERE event = \"1998 pokljuka\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 24,
+    "question": "What's the average draft pick number from Carson-Newman College before Round 7?",
+    "context": "CREATE TABLE table_name_21 (pick__number INTEGER, college VARCHAR, round VARCHAR)",
+    "gold_query": "SELECT AVG(pick__number) FROM table_name_21 WHERE college = \"carson-newman\" AND round < 7",
+    "predicted_query": "SELECT AVG(pick__number) FROM table_name_21 WHERE college = \"carson-newman\" AND round < 7;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 25,
+    "question": "Who was the spouse of the consort who was born as rania al yassin?",
+    "context": "CREATE TABLE table_name_27 (spouse_to VARCHAR, born_as VARCHAR)",
+    "gold_query": "SELECT spouse_to FROM table_name_27 WHERE born_as = \"rania al yassin\"",
+    "predicted_query": "SELECT spouse_to FROM table_name_27 WHERE born_as = \"rania al yassin\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 26,
+    "question": "How many figures for wickets when the strike rate is 54.0?",
+    "context": "CREATE TABLE table_19662262_6 (wickets VARCHAR, strike_rate VARCHAR)",
+    "gold_query": "SELECT COUNT(wickets) FROM table_19662262_6 WHERE strike_rate = \"54.0\"",
+    "predicted_query": "SELECT wickets FROM table_19662262_6 WHERE strike_rate = \"54.0\";",
+    "exact_match": false,
+    "token_overlap": 0.875,
+    "component_accuracy": 0.6666666666666666,
+    "component_scores": {
+      "select": 0.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 27,
+    "question": "Who's the Communist ticket with an American Labor ticket of joseph v. o'leary?",
+    "context": "CREATE TABLE table_name_49 (communist_ticket VARCHAR, american_labor_ticket VARCHAR)",
+    "gold_query": "SELECT communist_ticket FROM table_name_49 WHERE american_labor_ticket = \"joseph v. o'leary\"",
+    "predicted_query": "SELECT communist_ticket FROM table_name_49 WHERE american_labor_ticket = \"joseph v. o'leary\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 28,
+    "question": "What is the HDI 2011 of the country with a DI 2011 of 7.63?",
+    "context": "CREATE TABLE table_name_54 (hdi_2011 VARCHAR, di_2011 VARCHAR)",
+    "gold_query": "SELECT hdi_2011 FROM table_name_54 WHERE di_2011 = \"7.63\"",
+    "predicted_query": "SELECT hdi_2011 FROM table_name_54 WHERE di_2011 = \"7.63\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 29,
+    "question": "How much Against has Draws of 2, and Losses smaller than 4?",
+    "context": "CREATE TABLE table_name_17 (against INTEGER, draws VARCHAR, losses VARCHAR)",
+    "gold_query": "SELECT SUM(against) FROM table_name_17 WHERE draws = 2 AND losses < 4",
+    "predicted_query": "SELECT SUM(against) FROM table_name_17 WHERE draws = 2 AND losses < 4;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 30,
+    "question": "What was Galatasaray score when when he won in 1990 and Trabzonspor was the runner-up?",
+    "context": "CREATE TABLE table_name_24 (score VARCHAR, year VARCHAR, winners VARCHAR, runners_up VARCHAR)",
+    "gold_query": "SELECT score FROM table_name_24 WHERE winners = \"galatasaray\" AND runners_up = \"trabzonspor\" AND year = 1990",
+    "predicted_query": "SELECT score FROM table_name_24 WHERE winners = \"galatasaray\" AND runners_up = \"trabzonspor\" AND year = 1990;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 31,
+    "question": "Who was the runner-up of the competition played at Minikahda Club?",
+    "context": "CREATE TABLE table_name_55 (runner_up VARCHAR, venue VARCHAR)",
+    "gold_query": "SELECT runner_up FROM table_name_55 WHERE venue = \"minikahda club\"",
+    "predicted_query": "SELECT runner_up FROM table_name_55 WHERE venue = \"minikahda club\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 32,
+    "question": "What is the catalog number for the Grilled Cheese label?",
+    "context": "CREATE TABLE table_name_33 (catalog VARCHAR, label VARCHAR)",
+    "gold_query": "SELECT catalog FROM table_name_33 WHERE label = \"grilled cheese\"",
+    "predicted_query": "SELECT catalog FROM table_name_33 WHERE label = \"grilled cheese\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 33,
+    "question": "Which opponent had the result of W 24-14?",
+    "context": "CREATE TABLE table_name_64 (opponent VARCHAR, result VARCHAR)",
+    "gold_query": "SELECT opponent FROM table_name_64 WHERE result = \"w 24-14\"",
+    "predicted_query": "SELECT opponent FROM table_name_64 WHERE result = \"w 24-14\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 34,
+    "question": "What is the newest season?",
+    "context": "CREATE TABLE table_2140071_7 (season INTEGER)",
+    "gold_query": "SELECT MAX(season) FROM table_2140071_7",
+    "predicted_query": "SELECT MAX(season) FROM table_2140071_7;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 35,
+    "question": "Which Surface has an Opponent(s) of anna-lena gr\u00f6nefeld tatjana malek?",
+    "context": "CREATE TABLE table_name_8 (surface VARCHAR, opponent_s_ VARCHAR)",
+    "gold_query": "SELECT surface FROM table_name_8 WHERE opponent_s_ = \"anna-lena gr\u00f6nefeld tatjana malek\"",
+    "predicted_query": "SELECT surface FROM table_name_8 WHERE opponent_s_ = \"anna-lena gr\u00f6nefeld tatjana malek\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 36,
+    "question": "In what TV season did the 3rd season air?",
+    "context": "CREATE TABLE table_1348989_2 (TV VARCHAR, season VARCHAR)",
+    "gold_query": "SELECT TV AS season FROM table_1348989_2 WHERE season = \"3rd\"",
+    "predicted_query": "SELECT TV FROM table_1348989_2 WHERE season = \"3rd\";",
+    "exact_match": false,
+    "token_overlap": 0.8888888888888888,
+    "component_accuracy": 0.6666666666666666,
+    "component_scores": {
+      "select": 0.3333333333333333,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 37,
+    "question": "Who ran the fastest lap in the team that competed in Zolder, in which Ferrari was the Constructor?",
+    "context": "CREATE TABLE table_name_39 (fastest_lap VARCHAR, constructor VARCHAR, location VARCHAR)",
+    "gold_query": "SELECT fastest_lap FROM table_name_39 WHERE constructor = \"ferrari\" AND location = \"zolder\"",
+    "predicted_query": "SELECT fastest_lap FROM table_name_39 WHERE constructor = \"ferrari\" AND location = \"zolder\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 38,
+    "question": "What was the NBA draft status for Northeast High School?",
+    "context": "CREATE TABLE table_name_7 (nba_draft VARCHAR, school VARCHAR)",
+    "gold_query": "SELECT nba_draft FROM table_name_7 WHERE school = \"northeast high school\"",
+    "predicted_query": "SELECT nba_draft FROM table_name_7 WHERE school = \"northeast high school\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 39,
+    "question": "What is the high Population (total) from 1976 with a (Barcaldine) smaller than 1,780?",
+    "context": "CREATE TABLE table_name_96 (population__total_ INTEGER, year VARCHAR, _barcaldine_ VARCHAR)",
+    "gold_query": "SELECT MAX(population__total_) FROM table_name_96 WHERE year = 1976 AND _barcaldine_ < 1 OFFSET 780",
+    "predicted_query": "SELECT MAX(population__total_) FROM table_name_96 WHERE year = 1976 AND _barcaldine_ < 1 OFFSET 780;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 40,
+    "question": "What 1953 has 2 as a 1949, and 3 as 1952?",
+    "context": "CREATE TABLE table_name_48 (Id VARCHAR)",
+    "gold_query": "SELECT 1953 FROM table_name_48 WHERE 1949 = \"2\" AND 1952 = \"3\"",
+    "predicted_query": "SELECT 1953 FROM table_name_48 WHERE 1949 = \"2\" AND 1952 = \"3\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 41,
+    "question": "What is the total number of losses for the over 30 games played?",
+    "context": "CREATE TABLE table_name_50 (losses VARCHAR, played INTEGER)",
+    "gold_query": "SELECT COUNT(losses) FROM table_name_50 WHERE played > 30",
+    "predicted_query": "SELECT COUNT(losses) FROM table_name_50 WHERE played > 30;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 42,
+    "question": "Show names for artists without any exhibition.",
+    "context": "CREATE TABLE artist (name VARCHAR, artist_id VARCHAR); CREATE TABLE exhibition (name VARCHAR, artist_id VARCHAR)",
+    "gold_query": "SELECT name FROM artist WHERE NOT artist_id IN (SELECT artist_id FROM exhibition)",
+    "predicted_query": "SELECT name FROM artist WHERE NOT artist_id IN (SELECT artist_id FROM exhibition);",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 43,
+    "question": "What are the countries of mountains with height bigger than 5000?",
+    "context": "CREATE TABLE mountain (Country VARCHAR, Height INTEGER)",
+    "gold_query": "SELECT Country FROM mountain WHERE Height > 5000",
+    "predicted_query": "SELECT Country FROM mountain WHERE Height > 5000;",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 44,
+    "question": "What is the highest Money ( \u00a3 ), when Player is \"Peter Hedblom\"?",
+    "context": "CREATE TABLE table_name_95 (money___ INTEGER, player VARCHAR)",
+    "gold_query": "SELECT MAX(money___) AS \u00a3__ FROM table_name_95 WHERE player = \"peter hedblom\"",
+    "predicted_query": "SELECT MAX(money___) AS \u00a3__ FROM table_name_95 WHERE player = \"peter hedb\u043b\u043e\u043c\";",
+    "exact_match": false,
+    "token_overlap": 0.9090909090909091,
+    "component_accuracy": 0.6666666666666666,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 0.75
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 45,
+    "question": "When was the appointment date for VFL Wolfsburg?",
+    "context": "CREATE TABLE table_name_72 (date_of_appointment VARCHAR, team VARCHAR)",
+    "gold_query": "SELECT date_of_appointment FROM table_name_72 WHERE team = \"vfl wolfsburg\"",
+    "predicted_query": "SELECT date_of_appointment FROM table_name_72 WHERE team = \"vfl wolfsburg\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 46,
+    "question": "What language is the moviein that is on UMP movies network through Sky service?",
+    "context": "CREATE TABLE table_name_87 (language VARCHAR, network VARCHAR, genre VARCHAR, service VARCHAR)",
+    "gold_query": "SELECT language FROM table_name_87 WHERE genre = \"movies\" AND service = \"sky\" AND network = \"ump movies\"",
+    "predicted_query": "SELECT language FROM table_name_87 WHERE network = \"ump movies\" AND genre = \"movie\" AND service = \"sky\";",
+    "exact_match": false,
+    "token_overlap": 0.9285714285714286,
+    "component_accuracy": 0.6666666666666666,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 0.8888888888888888
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 47,
+    "question": "What Location has a Design flow (LPM) smaller than 1900, and a Construction Start of 2006 june?",
+    "context": "CREATE TABLE table_name_40 (location VARCHAR, design_flow__lpm_ VARCHAR, construction_start VARCHAR)",
+    "gold_query": "SELECT location FROM table_name_40 WHERE design_flow__lpm_ < 1900 AND construction_start = \"2006 june\"",
+    "predicted_query": "SELECT location FROM table_name_40 WHERE design_flow__lpm_ < 1900 AND construction_start = \"2006 june\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 48,
+    "question": "What high definition television options are available for Italia 1?",
+    "context": "CREATE TABLE table_15887683_1 (hdtv VARCHAR, television_service VARCHAR)",
+    "gold_query": "SELECT hdtv FROM table_15887683_1 WHERE television_service = \"Italia 1\"",
+    "predicted_query": "SELECT hdtv FROM table_15887683_1 WHERE television_service = \"Italia 1\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  },
+  {
+    "id": 49,
+    "question": "Which suffix has the prefix of isothiocyanato- (-ncs)?",
+    "context": "CREATE TABLE table_name_17 (suffix VARCHAR, prefix VARCHAR)",
+    "gold_query": "SELECT suffix FROM table_name_17 WHERE prefix = \"isothiocyanato- (-ncs)\"",
+    "predicted_query": "SELECT suffix FROM table_name_17 WHERE prefix = \"isothiocyanato- (-ncs)\";",
+    "exact_match": true,
+    "token_overlap": 1.0,
+    "component_accuracy": 1.0,
+    "component_scores": {
+      "select": 1.0,
+      "from": 1.0,
+      "where": 1.0
+    },
+    "execution_correct": true
+  }
+]

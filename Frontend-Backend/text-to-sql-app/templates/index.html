@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NL to SQL Query Tool</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #4e73df;
+            --secondary-color: #36b9cc;
+            --success-color: #1cc88a;
+            --warning-color: #f6c23e;
+            --danger-color: #e74a3b;
+            --light-color: #f8f9fc;
+            --dark-color: #5a5c69;
+        }
+        
+        body {
+            padding-top: 2rem;
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .container {
+            max-width: 1200px;
+        }
+        
+        .card {
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border: none;
+            border-radius: 0.35rem;
+        }
+        
+        .card-header {
+            padding: 0.75rem 1.25rem;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .bg-gradient-primary-to-secondary {
+            background: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+        
+        .bg-gradient-success-to-primary {
+            background: linear-gradient(to right, var(--success-color) 0%, var(--primary-color) 100%);
+        }
+        
+        .bg-gradient-success-to-dark {
+            background: linear-gradient(to right, var(--success-color) 0%, #224abe 100%);
+        }
+        
+        .sql-container {
+            background-color: #282c34;
+            color: #abb2bf;
+            border-radius: 5px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .results-table {
+            overflow-x: auto;
+        }
+        
+        .model-badge {
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .model-badge.connected {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .model-badge.not-loaded {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .field-chip {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 16px;
+            font-size: 0.875rem;
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .field-chip.primary {
+            background-color: #cfe2ff;
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .field-chip.table {
+            background-color: #d1e7dd;
+            color: #146c43;
+            border-color: #146c43;
+        }
+        
+        .optimization-item {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .severity-high {
+            border-left-color: var(--danger-color);
+        }
+        
+        .severity-medium {
+            border-left-color: var(--warning-color);
+        }
+        
+        .severity-low {
+            border-left-color: var(--secondary-color);
+        }
+        
+        .nav-tabs .nav-link {
+            border: none;
+            color: #495057;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .nav-tabs .nav-link.active {
+            border: none;
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .agent-error {
+            padding: 10px;
+            background-color: #fff3cd;
+            border-left: 4px solid var(--warning-color);
+            margin-top: 10px;
+        }
+        
+        .agent-retry-btn {
+            font-size: 0.75rem;
+        }
+        
+        .suggestion-btn {
+            font-size: 0.75rem;
+        }
+        
+        .example-query {
+            cursor: pointer;
+        }
+        
+        .example-query:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .page-header {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .page-header h1 {
+            color: #234abe;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .page-header p {
+            color: #6c757d;
+            margin-bottom: 0;
+        }
+        
+        /* For charts */
+        .bar-chart-container {
+            margin: 20px 0;
+        }
+        
+        .pie-chart {
+            border-radius: 50%;
+            border: 1px solid #eaeaea;
+            overflow: hidden;
+            background-color: #f8f9fc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1><i class="fas fa-database me-2"></i>Natural Language to SQL Query Tool</h1>
+            <p>Convert natural language questions into SQL queries for your database</p>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-gradient-primary-to-secondary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-wifi me-2"></i>Remote Model Status</h5>
+                        <div class="d-flex align-items-center">
+                            <span id="modelStatus" class="model-badge not-loaded me-2">Disconnected</span>
+                            <button id="checkConnection" class="btn btn-outline-light btn-sm">Check Connection</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">This application connects to a remote model to convert natural language questions into SQL queries.</p>
+                        <div id="modelInfo" class="alert alert-info mt-2" style="display: none;">
+                            Checking connection to remote model...
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-gradient-primary-to-secondary text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fas fa-robot me-2"></i>AI Agents Status</h5>
+                        <div class="d-flex align-items-center">
+                            <span id="agentStatus" class="model-badge not-loaded me-2">Agents Not Loaded</span>
+                            <button id="initializeAgents" class="btn btn-outline-light btn-sm">Initialize Agents</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">This application uses specialized AI agents to enhance SQL generation:</p>
+                        <ul id="agentList" class="mt-2">
+                            <li><i class="fas fa-diagram-project me-1"></i>Schema Analyzer - Analyzes database schemas for better field selection</li>
+                            <li><i class="fas fa-bolt me-1"></i>SQL Optimizer - Improves query performance</li>
+                            <li><i class="fas fa-question-circle me-1"></i>Ambiguity Detector - Identifies and resolves vague terms in queries</li>
+                        </ul>
+                        <div id="agentInfo" class="alert alert-info mt-2" style="display: none;">
+                            Agent information will appear here.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-database me-2"></i>Database Connection</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="dataset" class="form-label">Dataset ID</label>
+                            <input type="text" class="form-control" id="dataset" placeholder="Enter BigQuery dataset ID">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="table" class="form-label">Table ID</label>
+                            <input type="text" class="form-control" id="table" placeholder="Enter BigQuery table ID">
+                        </div>
+                    </div>
+                </div>
+                <button id="fetchSchema" class="btn btn-primary">
+                    <i class="fas fa-sync me-1"></i>Fetch Schema
+                </button>
+            </div>
+        </div>
+
+        <div class="card" id="schemaCard" style="display: none;">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="fas fa-table me-2"></i>Table Schema</h5>
+            </div>
+            <div class="card-body">
+                <div class="schema-info p-3 border rounded bg-light" id="schemaInfo"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-gradient-success-to-primary text-white">
+                <h5 class="mb-0"><i class="fas fa-search me-2"></i>Natural Language Query</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="nlQuery" class="form-label d-flex justify-content-between">
+                        <span>Ask a question about your data</span>
+                        <span>
+                            <button class="btn btn-sm btn-outline-secondary" id="showExamples">
+                                <i class="fas fa-lightbulb me-1"></i>Show Examples
+                            </button>
+                        </span>
+                    </label>
+                    <div class="input-group mb-2">
+                        <textarea class="form-control" id="nlQuery" rows="3" placeholder="Example: What categories don't have a parent category?"></textarea>
+                        <button class="btn btn-outline-secondary" type="button" id="clearQuery">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <!-- Query History Dropdown -->
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="queryHistoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-history me-1"></i>Recent Queries
+                            </button>
+                            <ul class="dropdown-menu" id="queryHistory" aria-labelledby="queryHistoryDropdown">
+                                <li><span class="dropdown-item text-muted">No recent queries</span></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="#" id="clearHistory">Clear History</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="query-suggestions" id="querySuggestions">
+                            <button class="btn btn-sm btn-outline-info suggestion-btn me-1">
+                                <i class="fas fa-calculator me-1"></i>Count records
+                            </button>
+                            <button class="btn btn-sm btn-outline-info suggestion-btn me-1">
+                                <i class="fas fa-filter me-1"></i>Filter by field
+                            </button>
+                            <button class="btn btn-sm btn-outline-info suggestion-btn">
+                                <i class="fas fa-sort-amount-down me-1"></i>Sort results
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button id="generateQuery" class="btn btn-primary">
+                    <i class="fas fa-play me-1"></i>Generate SQL & Execute
+                </button>
+            </div>
+        </div>
+
+        <div class="card" id="sqlCard" style="display: none;">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-code me-2"></i>Generated SQL</h5>
+                <button class="btn btn-sm btn-outline-dark" id="copySql">
+                    <i class="fas fa-copy me-1"></i>Copy
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="sql-container" id="generatedSQL"></div>
+            </div>
+        </div>
+
+        <div class="card" id="resultsCard" style="display: none;">
+            <div class="card-header bg-gradient-success-to-dark text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-table me-2"></i>Query Results</h5>
+                <div>
+                    <button class="btn btn-sm btn-outline-light" id="exportResults">
+                        <i class="fas fa-download me-1"></i>Export
+                    </button>
+                    <div class="btn-group ms-2">
+                        <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-chart-bar me-1"></i>Visualize
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" id="visualizeTable">Table View</a></li>
+                            <li><a class="dropdown-item" href="#" id="visualizeBarChart">Bar Chart</a></li>
+                            <li><a class="dropdown-item" href="#" id="visualizePieChart">Pie Chart</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-3 d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <span class="me-2">Show</span>
+                        <select class="form-select form-select-sm" id="resultsPerPage" style="width: auto;">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <span class="ms-2">entries</span>
+                    </div>
+                    <div class="input-group" style="width: 250px;">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control form-control-sm" id="resultsSearch" placeholder="Search results...">
+                    </div>
+                </div>
+                
+                <div id="resultsContainer">
+                    <div class="results-table">
+                        <table class="table table-striped table-hover" id="resultsTable">
+                            <thead id="resultsHeader"></thead>
+                            <tbody id="resultsBody"></tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="chartContainer" style="display: none; height: 300px;">
+                        <!-- Chart will be rendered here -->
+                    </div>
+                </div>
+                
+                <div id="noResults" style="display: none;">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <span id="noResultsMessage">No results found for this query.</span>
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <div class="text-muted small">Showing <span id="resultsShowing">0</span> of <span id="resultsTotal">0</span> entries</div>
+                    <nav aria-label="Results pagination">
+                        <ul class="pagination pagination-sm" id="resultsPagination">
+                            <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card" id="agentAnalysisCard" style="display: none;">
+            <div class="card-header bg-gradient-primary-to-secondary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-robot me-2"></i>Agent Analysis
+                </h5>
+                <div>
+                    <button class="btn btn-sm btn-outline-light" id="refreshAnalysis">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="btn btn-sm btn-outline-light ms-2" data-bs-toggle="collapse" data-bs-target="#agentAnalysisContent" aria-expanded="true">
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="agentAnalysisContent" class="collapse show">
+                <div class="card-body p-0">
+                    <!-- Agent Analysis Tabs -->
+                    <ul class="nav nav-tabs" id="agentTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="schema-tab" data-bs-toggle="tab" data-bs-target="#schema-content" type="button" role="tab" aria-controls="schema-content" aria-selected="true">
+                                <i class="fas fa-database me-1"></i> Schema Analysis
+                                <span id="schemaStatusBadge" class="badge bg-success ms-2">Success</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="ambiguity-tab" data-bs-toggle="tab" data-bs-target="#ambiguity-content" type="button" role="tab" aria-controls="ambiguity-content" aria-selected="false">
+                                <i class="fas fa-question-circle me-1"></i> Ambiguity Check
+                                <span id="ambiguityStatusBadge" class="badge bg-success ms-2">Success</span>
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="performance-tab" data-bs-toggle="tab" data-bs-target="#performance-content" type="button" role="tab" aria-controls="performance-content" aria-selected="false">
+                                <i class="fas fa-bolt me-1"></i> Performance
+                                <span id="performanceStatusBadge" class="badge bg-success ms-2">Success</span>
+                            </button>
+                        </li>
+                    </ul>
+                    
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="agentTabContent">
+                        <!-- Schema Analysis Tab -->
+                        <div class="tab-pane fade show active" id="schema-content" role="tabpanel" aria-labelledby="schema-tab">
+                            <div class="p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0">Tables and Fields Analysis</h6>
+                                    <span class="text-muted small">Processing time: <span id="schemaTime">0.2s</span></span>
+                                </div>
+                                <div id="schemaAnalysis" class="p-3 border rounded bg-light">
+                                    <div class="schema-analysis-content"></div>
+                                </div>
+                                
+                                <div class="mt-3">
+                                    <h6>Relevant Fields</h6>
+                                    <div id="relevantFields" class="d-flex flex-wrap gap-2">
+                                        <!-- Dynamic field chips will be inserted here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Ambiguity Check Tab -->
+                        <div class="tab-pane fade" id="ambiguity-content" role="tabpanel" aria-labelledby="ambiguity-tab">
+                            <div class="p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0">Query Clarity Assessment</h6>
+                                    <span class="text-muted small">Processing time: <span id="ambiguityTime">0.3s</span></span>
+                                </div>
+                                <div id="ambiguityCheck" class="p-3 border rounded bg-light">
+                                    <div class="ambiguity-check-content"></div>
+                                </div>
+                                
+                                <div id="clarificationContainer" class="mt-3" style="display: none;">
+                                    <h6>Suggested Clarifications</h6>
+                                    <div class="alert alert-info">
+                                        <ul id="clarificationQuestions" class="mb-0">
+                                            <!-- Clarification questions will be inserted here -->
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Performance Tab -->
+                        <div class="tab-pane fade" id="performance-content" role="tabpanel" aria-labelledby="performance-tab">
+                            <div class="p-3">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="mb-0">Query Optimization Insights</h6>
+                                    <span class="text-muted small">Processing time: <span id="performanceTime">0.2s</span></span>
+                                </div>
+                                <div id="performanceSuggestions" class="p-3 border rounded bg-light">
+                                    <div class="performance-suggestions-content"></div>
+                                </div>
+                                
+                                <div id="optimizationChanges" class="mt-3">
+                                    <h6>Optimization Changes</h6>
+                                    <ul id="optimizationList" class="list-group">
+                                        <!-- Optimization changes will be inserted here -->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Query Examples Modal -->
+    <div class="modal fade" id="examplesModal" tabindex="-1" aria-labelledby="examplesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-light">
+                    <h5 class="modal-title" id="examplesModalLabel">
+                        <i class="fas fa-lightbulb text-warning me-2"></i>Query Examples
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Basic Queries</h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item example-query">Find all customers who live in California</li>
+                                        <li class="list-group-item example-query">Show top 5 customers by total purchases</li>
+                                        <li class="list-group-item example-query">Count customers by city</li>
+                                        <li class="list-group-item example-query">List customers who registered in 2022</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Advanced Queries</h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item example-query">Find customers whose total purchases exceed the average</li>
+                                        <li class="list-group-item example-query">List customers with Silver loyalty tier who live in San Jose</li>
+                                        <li class="list-group-item example-query">Show the average total purchases per state</li>
+                                        <li class="list-group-item example-query">Find customers who registered in the last 6 months</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Click on any example to use it in your query.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Store the API URL from Flask
+        const MODEL_API_URL = "{{ model_api_url }}";
+        
+        // Store all fetched results for client-side filtering and pagination
+        let allResults = [];
+        
+        // Store the last agent analysis for refresh functionality
+        let lastAgentAnalysis = null;
+        
+        $(document).ready(function() {
+            // Check model connection on page load
+            checkModelConnection();
+            
+            // Check agent status on page load
+            checkAgentStatus();
+            
+            // Initialize the query history
+            const history = JSON.parse(localStorage.getItem('queryHistory') || '[]');
+            updateQueryHistoryDropdown(history);
+            
+            // Check connection button
+            $('#checkConnection').click(function() {
+                checkModelConnection();
+            });
+            
+            // Initialize agents button
+            $('#initializeAgents').click(function() {
+                const initButton = $(this);
+                const agentStatus = $('#agentStatus');
+                const agentInfo = $('#agentInfo');
+                
+                initButton.prop('disabled', true);
+                initButton.text('Initializing...');
+                agentInfo.text('Initializing agents. This may take a minute or two...');
+                agentInfo.show();
+                
+                // Call API to initialize agents
+                fetch('/api/initialize-agent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        api_url: MODEL_API_URL
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Agent initialization response:", data);
+                    if (data.success) {
+                        agentStatus.text('Agents Active');
+                        agentStatus.removeClass('not-loaded');
+                        agentStatus.addClass('connected');
+                        initButton.text('Agents Initialized');
+                        agentInfo.text('AI agents are now active and will enhance SQL generation.');
+                        agentInfo.removeClass('alert-info').addClass('alert-success');
+                    } else {
+                        initButton.prop('disabled', false);
+                        initButton.text('Retry Initialization');
+                        agentInfo.text(`Failed to initialize agents: ${data.message || data.error}`);
+                        agentInfo.removeClass('alert-info').addClass('alert-danger');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error initializing agents:", error);
+                    initButton.prop('disabled', false);
+                    initButton.text('Retry Initialization');
+                    agentInfo.text(`Error initializing agents: ${error}`);
+                    agentInfo.removeClass('alert-info').addClass('alert-danger');
+                });
+            });
+            
+            // Example Query Modal
+            $('#showExamples').click(function() {
+                const examplesModal = new bootstrap.Modal(document.getElementById('examplesModal'));
+                examplesModal.show();
+            });
+            
+            // Use example query
+            $(document).on('click', '.example-query', function() {
+                const queryText = $(this).text();
+                $('#nlQuery').val(queryText);
+                $('#examplesModal').modal('hide');
+            });
+            
+            // Clear query text
+            $('#clearQuery').click(function() {
+                $('#nlQuery').val('');
+            });
+            
+            // Query history
+            $(document).on('click', '.query-history-item', function(e) {
+                e.preventDefault();
+                const queryText = $(this).text();
+                $('#nlQuery').val(queryText);
+            });
+            
+            // Clear history
+            $('#clearHistory').click(function(e) {
+                e.preventDefault();
+                localStorage.removeItem('queryHistory');
+                $('#queryHistory').find('.query-history-item').parent().remove();
+                
+                // Add "No history" item
+                $('#queryHistory').prepend('<li><span class="dropdown-item text-muted">No recent queries</span></li>');
+            });
+            
+            // Query suggestions
+            $('.suggestion-btn').click(function() {
+                const suggestion = $(this).text().trim();
+                let queryPrefix = "";
+                
+                if (suggestion.includes("Count")) {
+                    queryPrefix = "Count the number of ";
+                } else if (suggestion.includes("Filter")) {
+                    queryPrefix = "Find records where ";
+                } else if (suggestion.includes("Sort")) {
+                    queryPrefix = "Show all records sorted by ";
+                }
+                
+                const currentQuery = $('#nlQuery').val();
+                if (currentQuery.trim() === "") {
+                    $('#nlQuery').val(queryPrefix);
+                } else {
+                    $('#nlQuery').focus();
+                }
+            });
+            
+            // Fetch schema button
+            $('#fetchSchema').click(function() {
+                const dataset = $('#dataset').val();
+                const table = $('#table').val();
+                
+                if (!dataset || !table) {
+                    alert('Please enter both dataset and table IDs');
+                    return;
+                }
+                
+                // Show loading state
+                $('#schemaCard').show();
+                $('#schemaInfo').html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Fetching schema...</div>');
+                
+                fetch(`/api/schema?dataset_id=${dataset}&table_id=${table}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            $('#schemaInfo').html(`<div class="alert alert-danger">Error: ${data.error}</div>`);
+                        } else {
+                            $('#schemaInfo').text(data.schema);
+                        }
+                    })
+                    .catch(error => {
+                        $('#schemaInfo').html(`<div class="alert alert-danger">Error fetching schema: ${error}</div>`);
+                    });
+            });
+            
+            // Copy SQL button
+            $('#copySql').click(function() {
+                const sql = $('#generatedSQL').text();
+                navigator.clipboard.writeText(sql).then(
+                    function() {
+                        // Change button text temporarily
+                        const btn = $('#copySql');
+                        const originalText = btn.html();
+                        btn.html('<i class="fas fa-check me-1"></i>Copied!');
+                        setTimeout(() => btn.html(originalText), 2000);
+                    },
+                    function() {
+                        alert('Failed to copy SQL to clipboard');
+                    }
+                );
+            });
+            
+            // Generate and execute query button
+            $('#generateQuery').click(function() {
+                const nlQuery = $('#nlQuery').val();
+                const dataset = $('#dataset').val();
+                const table = $('#table').val();
+                
+                if (!nlQuery) {
+                    alert('Please enter a natural language query');
+                    return;
+                }
+                
+                if (!dataset || !table) {
+                    alert('Please enter both dataset and table IDs');
+                    return;
+                }
+                
+                // Add to query history
+                saveQueryToHistory(nlQuery);
+                
+                // Show loading state
+                $('#generateQuery').prop('disabled', true);
+                $('#generateQuery').html('<i class="fas fa-spinner fa-spin me-1"></i>Processing...');
+                
+                // Hide previous agent analysis
+                $('#agentAnalysisCard').hide();
+                
+                // Send request to backend
+                fetch('/api/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        query: nlQuery,
+                        dataset_id: dataset,
+                        table_id: table
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Reset button state
+                    $('#generateQuery').prop('disabled', false);
+                    $('#generateQuery').html('<i class="fas fa-play me-1"></i>Generate SQL & Execute');
+                    
+                    // Display generated SQL
+                    $('#sqlCard').show();
+                    $('#generatedSQL').text(data.generated_sql);
+                    
+                    // Reset results pagination
+                    setupResultsPagination(1);
+                    
+                    // Display results
+                    $('#resultsCard').show();
+                    const resultsTable = $('#resultsTable');
+                    const resultsHeader = $('#resultsHeader');
+                    const resultsBody = $('#resultsBody');
+                    
+                    if (data.error) {
+                        $('#noResults').show();
+                        $('#noResultsMessage').html(`<span class="text-danger">Error: ${data.error}</span>`);
+                        resultsHeader.html('');
+                        resultsBody.html('');
+                        $('#chartContainer').hide();
+                        $('.results-table').hide();
+                    } else if (data.results && data.results.length > 0) {
+                        $('#noResults').hide();
+                        
+                        // Store for client-side operations
+                        allResults = data.results;
+                        
+                        // Create table header
+                        resultsHeader.html('');
+                        const headerRow = document.createElement('tr');
+                        const columns = Object.keys(data.results[0]);
+                        
+                        columns.forEach(column => {
+                            const th = document.createElement('th');
+                            th.innerText = column;
+                            th.style.cursor = 'pointer';
+                            th.addEventListener('click', function() {
+                                sortResults(column);
+                            });
+                            headerRow.appendChild(th);
+                        });
+                        
+                        resultsHeader.append(headerRow);
+                        
+                        // Update result counts
+                        $('#resultsTotal').text(data.results.length);
+                        const perPage = parseInt($('#resultsPerPage').val());
+                        const showing = Math.min(perPage, data.results.length);
+                        $('#resultsShowing').text(`1-${showing}`);
+                        
+                        // Display first page
+                        displayResultsPage(1);
+                        
+                        // Show table, hide chart
+                        $('#chartContainer').hide();
+                        $('.results-table').show();
+                    } else {
+                        resultsHeader.html('');
+                        resultsBody.html('');
+                        $('#noResults').show();
+                        $('#noResultsMessage').text('No results found for this query.');
+                        $('#chartContainer').hide();
+                        $('.results-table').hide();
+                    }
+                    
+                    // Update agent analysis
+                    updateAgentAnalysis(data);
+                })
+                .catch(error => {
+                    // Reset button state
+                    $('#generateQuery').prop('disabled', false);
+                    $('#generateQuery').html('<i class="fas fa-play me-1"></i>Generate SQL & Execute');
+                    
+                    alert(`Error: ${error}`);
+                });
+            });
+            
+            // Results pagination
+            $(document).on('click', '#resultsPagination .page-link', function(e) {
+                e.preventDefault();
+                if ($(this).parent().hasClass('disabled')) return;
+                
+                const page = $(this).text();
+                if (page === 'Previous') {
+                    const activePage = $('#resultsPagination .page-item.active');
+                    if (activePage.prev().length > 0 && !activePage.prev().hasClass('disabled')) {
+                        activePage.removeClass('active');
+                        activePage.prev().addClass('active');
+                        const prevPage = parseInt(activePage.prev().find('.page-link').text());
+                        displayResultsPage(prevPage);
+                    }
+                } else if (page === 'Next') {
+                    const activePage = $('#resultsPagination .page-item.active');
+                    if (activePage.next().length > 0 && !activePage.next().hasClass('disabled')) {
+                        activePage.removeClass('active');
+                        activePage.next().addClass('active');
+                        const nextPage = parseInt(activePage.next().find('.page-link').text());
+                        displayResultsPage(nextPage);
+                    }
+                } else {
+                    $('#resultsPagination .page-item').removeClass('active');
+                    $(this).parent().addClass('active');
+                    displayResultsPage(parseInt(page));
+                }
+            });
+            
+            // Results per page
+            $('#resultsPerPage').change(function() {
+                const page = 1;
+                setupResultsPagination(page);
+                displayResultsPage(page);
+            });
+            
+            // Results search
+            $('#resultsSearch').on('input', function() {
+                const page = 1;
+                setupResultsPagination(page);
+                displayResultsPage(page);
+            });
+            
+            // Export results
+            $('#exportResults').click(function() {
+                if (!allResults || allResults.length === 0) {
+                    alert('No results to export');
+                    return;
+                }
+                
+                // Create CSV content
+                let csv = [];
+                
+                // Add header row
+                const headers = Object.keys(allResults[0]);
+                csv.push(headers.join(','));
+                
+                // Add data rows
+                allResults.forEach(row => {
+                    const rowData = headers.map(header => {
+                        const value = row[header] !== null ? row[header] : '';
+                        // Escape commas and quotes
+                        return `"${String(value).replace(/"/g, '""')}"`;
+                    });
+                    csv.push(rowData.join(','));
+                });
+                
+                // Create download link
+                const csvContent = csv.join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'query_results.csv');
+                link.style.visibility = 'hidden';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+            
+            // Visualization options
+            $('#visualizeTable').click(function() {
+                $('#chartContainer').hide();
+                $('.results-table').show();
+            });
+            
+            $('#visualizeBarChart').click(function() {
+                if (!allResults || allResults.length === 0) {
+                    alert('No results to visualize');
+                    return;
+                }
+                
+                $('.results-table').hide();
+                $('#chartContainer').show();
+                
+                // Simple bar chart rendering using HTML/CSS
+                const chartContainer = $('#chartContainer');
+                chartContainer.empty();
+                
+                // Find a numeric column to visualize
+                let numericColumn = null;
+                let categoryColumn = null;
+                
+                const headers = Object.keys(allResults[0]);
+                for (const header of headers) {
+                    if (typeof allResults[0][header] === 'number') {
+                        numericColumn = header;
+                        break;
+                    }
+                }
+                
+                // Find a text column for categories
+                for (const header of headers) {
+                    if (typeof allResults[0][header] === 'string' && header !== numericColumn) {
+                        categoryColumn = header;
+                        break;
+                    }
+                }
+                
+                if (!numericColumn || !categoryColumn) {
+                    chartContainer.html('<div class="alert alert-warning">Unable to create chart: Need both numeric and text columns</div>');
+                    return;
+                }
+                
+                chartContainer.append(`<h5>Bar Chart: ${categoryColumn} vs ${numericColumn}</h5>`);
+                
+                const chartDiv = $('<div class="bar-chart-container my-4"></div>');
+                chartContainer.append(chartDiv);
+                
+                // Limit to top 10 items for clarity
+                const chartData = allResults.slice(0, 10);
+                
+                // Find the max value for scaling
+                const maxValue = Math.max(...chartData.map(item => item[numericColumn]));
+                
+                // Create bars
+                chartData.forEach(item => {
+                    const percentage = (item[numericColumn] / maxValue) * 100;
+                    chartDiv.append(`
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>${item[categoryColumn]}</span>
+                                <span>${item[numericColumn]}</span>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar bg-primary" role="progressbar" style="width: ${percentage}%" 
+                                     aria-valuenow="${item[numericColumn]}" aria-valuemin="0" aria-valuemax="${maxValue}"></div>
+                            </div>
+                        </div>
+                    `);
+                });
+            });
+            
+            $('#visualizePieChart').click(function() {
+                if (!allResults || allResults.length === 0) {
+                    alert('No results to visualize');
+                    return;
+                }
+                
+                $('.results-table').hide();
+                $('#chartContainer').show();
+                
+                // Simple pie chart rendering using HTML/CSS
+                const chartContainer = $('#chartContainer');
+                chartContainer.empty();
+                
+                // Find a text column for categories
+                let categoryColumn = null;
+                
+                const headers = Object.keys(allResults[0]);
+                for (const header of headers) {
+                    if (typeof allResults[0][header] === 'string') {
+                        categoryColumn = header;
+                        break;
+                    }
+                }
+                
+                if (!categoryColumn) {
+                    chartContainer.html('<div class="alert alert-warning">Unable to create chart: Need a text column for categories</div>');
+                    return;
+                }
+                
+                chartContainer.append(`<h5>Distribution by ${categoryColumn}</h5>`);
+                
+                // Count occurrences of each category
+                const categories = {};
+                allResults.forEach(item => {
+                    const category = item[categoryColumn];
+                    categories[category] = (categories[category] || 0) + 1;
+                });
+                
+                // Create a simple pie chart representation
+                const chartDiv = $('<div class="d-flex justify-content-center my-4"></div>');
+                const pieChart = $('<div class="pie-chart position-relative" style="width: 200px; height: 200px;"></div>');
+                chartDiv.append(pieChart);
+                chartContainer.append(chartDiv);
+                
+                // Create legend
+                const legendDiv = $('<div class="row mt-3"></div>');
+                chartContainer.append(legendDiv);
+                
+                // Calculate total for percentages
+                const total = Object.values(categories).reduce((sum, count) => sum + count, 0);
+                
+                // Assign colors and create segments
+                const colors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b', '#858796', '#f8f9fc', '#5a5c69'];
+                let startAngle = 0;
+                let colorIndex = 0;
+                
+                Object.entries(categories).forEach(([category, count]) => {
+                    const percentage = (count / total) * 100;
+                    const angle = (percentage / 100) * 360;
+                    
+                    // Add pie segment
+                    if (Object.keys(categories).length > 1) {
+                        pieChart.append(`
+                            <div class="position-absolute top-0 start-0 w-100 h-100" 
+                                 style="clip-path: polygon(50% 50%, ${50 + 50 * Math.cos(startAngle * Math.PI / 180)}% ${50 + 50 * Math.sin(startAngle * Math.PI / 180)}%, ${50 + 50 * Math.cos((startAngle + angle) * Math.PI / 180)}% ${50 + 50 * Math.sin((startAngle + angle) * Math.PI / 180)}%, 50% 50%); background-color: ${colors[colorIndex]};">
+                            </div>
+                        `);
+                    } else {
+                        // Just a circle if only one category
+                        pieChart.append(`
+                            <div class="position-absolute top-0 start-0 w-100 h-100 rounded-circle" 
+                                 style="background-color: ${colors[colorIndex]};">
+                            </div>
+                        `);
+                    }
+                    
+                    // Add legend item
+                    legendDiv.append(`
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex align-items-center">
+                                <div style="width: 20px; height: 20px; background-color: ${colors[colorIndex]}; margin-right: 8px;"></div>
+                                <div>
+                                    <div>${category}</div>
+                                    <div class="small text-muted">${percentage.toFixed(1)}% (${count})</div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                    
+                    startAngle += angle;
+                    colorIndex = (colorIndex + 1) % colors.length;
+                });
+            });
+            
+            // Refresh Analysis button
+            $('#refreshAnalysis').click(function() {
+                // Reset badges
+                $('.badge').removeClass('bg-danger bg-warning').addClass('bg-success').text('Success');
+                
+                // Show loading state
+                $('.schema-analysis-content, .ambiguity-check-content, .performance-suggestions-content')
+                    .html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Processing...</div>');
+                
+                // In a real implementation, you would re-run the agent analysis here
+                // For demo purposes, we'll just use timeout to simulate processing
+                setTimeout(function() {
+                    if (lastAgentAnalysis) {
+                        AgentAnalysisManager.initializeAnalysis(lastAgentAnalysis);
+                    }
+                }, 1500);
+            });
+            
+            // Individual retry buttons
+            $(document).on('click', '.agent-retry-btn', function() {
+                const section = $(this).closest('[id$="-content"]').attr('id').split('-')[0];
+                $(`.${section}-analysis-content, .${section}-check-content, .${section}-suggestions-content`)
+                    .html('<div class="text-center"><i class="fas fa-spinner fa-spin"></i> Processing...</div>');
+                
+                // In a real implementation, you would re-run just this specific agent
+                // For demo purposes, we'll just use timeout to simulate processing
+                setTimeout(function() {
+                    if (lastAgentAnalysis) {
+                        if (section === 'schema') {
+                            AgentAnalysisManager.processSchemaAnalysis(lastAgentAnalysis.schema_analysis);
+                        } else if (section === 'ambiguity') {
+                            AgentAnalysisManager.processAmbiguityCheck(
+                                lastAgentAnalysis.ambiguity_check, 
+                                lastAgentAnalysis.clarification_questions
+                            );
+                        } else if (section === 'performance') {
+                            AgentAnalysisManager.processPerformance(lastAgentAnalysis.performance_suggestions);
+                        }
+                    }
+                }, 1000);
+            });
+        });
+        
+        // Function to check model connection
+        function checkModelConnection() {
+            const checkButton = $('#checkConnection');
+            const modelStatus = $('#modelStatus');
+            const modelInfo = $('#modelInfo');
+            
+            checkButton.prop('disabled', true);
+            checkButton.text('Checking...');
+            modelInfo.text('Checking connection to remote model...');
+            modelInfo.show();
+            
+            fetch('/check_model')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.available) {
+                        modelStatus.text('Connected');
+                        modelStatus.removeClass('not-loaded');
+                        modelStatus.addClass('connected');
+                        checkButton.text('Check Connection');
+                        modelInfo.text(`Successfully connected to remote model at: ${data.url}`);
+                        modelInfo.removeClass('alert-info').addClass('alert-success');
+                    } else {
+                        modelStatus.text('Disconnected');
+                        modelStatus.removeClass('connected');
+                        modelStatus.addClass('not-loaded');
+                        checkButton.text('Check Connection');
+                        modelInfo.text(`Could not connect to remote model at: ${data.url}. Please verify the URL and make sure the model is running.`);
+                        modelInfo.removeClass('alert-info').addClass('alert-danger');
+                    }
+                    checkButton.prop('disabled', false);
+                })
+                .catch(error => {
+                    modelStatus.text('Error');
+                    modelStatus.removeClass('connected');
+                    modelStatus.addClass('not-loaded');
+                    checkButton.disabled = false;
+                    checkButton.text('Check Connection');
+                    modelInfo.text('Error checking connection: ' + error);
+                    modelInfo.removeClass('alert-info').addClass('alert-danger');
+                });
+        }
+        
+        // Function to check agent status
+        function checkAgentStatus() {
+            fetch('/api/agent-status')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Agent status response:", data);
+                    if (data.agent_initialized) {
+                        $('#agentStatus').text('Agents Active');
+                        $('#agentStatus').removeClass('not-loaded').addClass('connected');
+                        $('#initializeAgents').text('Agents Initialized');
+                        $('#initializeAgents').prop('disabled', true);
+                        
+                        // Update agent list if available
+                        if (data.available_agents && data.available_agents.length > 0) {
+                            const agentList = $('#agentList');
+                            agentList.empty();
+                            data.available_agents.forEach(agent => {
+                                agentList.append(`<li><i class="fas fa-check-circle me-1 text-success"></i>${agent}</li>`);
+                            });
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking agent status:', error);
+                });
+        }
+        
+        // Agent Analysis Manager
+        const AgentAnalysisManager = {
+            // Initialize the Agent Analysis UI with data
+            initializeAnalysis: function(agentAnalysisData) {
+                if (!agentAnalysisData) return;
+                
+                // Show the analysis card
+                $('#agentAnalysisCard').show();
+                
+                // Process times (simulated, you can add actual processing times from your backend)
+                $('#schemaTime').text(this.getRandomTime());
+                $('#ambiguityTime').text(this.getRandomTime());
+                $('#performanceTime').text(this.getRandomTime());
+                
+                // Process Schema Analysis
+                this.processSchemaAnalysis(agentAnalysisData.schema_analysis);
+                
+                // Process Ambiguity Check
+                this.processAmbiguityCheck(agentAnalysisData.ambiguity_check, 
+                                          agentAnalysisData.clarification_questions);
+                
+                // Process Performance Suggestions
+                this.processPerformance(agentAnalysisData.performance_suggestions);
+            },
+            
+            // Process Schema Analysis data
+            processSchemaAnalysis: function(schemaAnalysis) {
+                if (!schemaAnalysis) {
+                    this.showError('schema', 'Schema analysis data not available');
+                    return;
+                }
+                
+                // Set content in the schema analysis section
+                $('.schema-analysis-content').html(this.formatAnalysisText(schemaAnalysis));
+                
+                // Extract and display relevant fields
+                const fieldsContainer = $('#relevantFields');
+                fieldsContainer.empty();
+                
+                // Extract tables and fields from the analysis text (this is a simplified example)
+                const tableMatches = schemaAnalysis.match(/table[s]?:\s*([^\.]+)/i);
+                const fieldMatches = schemaAnalysis.match(/fields?:\s*([^\.]+)/i);
+                
+                if (tableMatches && tableMatches[1]) {
+                    const tables = tableMatches[1].split(',').map(t => t.trim());
+                    tables.forEach(table => {
+                        fieldsContainer.append(`<span class="field-chip table"><i class="fas fa-table me-1"></i>${table}</span>`);
+                    });
+                }
+                
+                if (fieldMatches && fieldMatches[1]) {
+                    const fields = fieldMatches[1].split(',').map(f => f.trim());
+                    fields.forEach(field => {
+                        fieldsContainer.append(`<span class="field-chip primary"><i class="fas fa-column me-1"></i>${field}</span>`);
+                    });
+                }
+                
+                // If no fields were found, add a message
+                if (fieldsContainer.children().length === 0) {
+                    fieldsContainer.append('<p class="text-muted small">No specific fields identified</p>');
+                }
+            },
+            
+            // Process Ambiguity Check data
+            processAmbiguityCheck: function(ambiguityCheck, clarificationQuestions) {
+                if (!ambiguityCheck) {
+                    this.showError('ambiguity', 'Ambiguity check data not available');
+                    return;
+                }
+                
+                // Set content in the ambiguity check section
+                $('.ambiguity-check-content').html(this.formatAnalysisText(ambiguityCheck));
+                
+                // Handle clarification questions
+                const clarificationContainer = $('#clarificationContainer');
+                const questionsList = $('#clarificationQuestions');
+                
+                if (clarificationQuestions && clarificationQuestions.length > 0) {
+                    questionsList.empty();
+                    clarificationQuestions.forEach(question => {
+                        questionsList.append(`<li>${question}</li>`);
+                    });
+                    clarificationContainer.show();
+                    
+                    // Update badge to show questions exist
+                    $('#ambiguityStatusBadge')
+                        .removeClass('bg-success')
+                        .addClass('bg-warning')
+                        .text('Needs Clarification');
+                } else {
+                    clarificationContainer.hide();
+                }
+            },
+            
+            // Process Performance Suggestions data
+            processPerformance: function(performanceSuggestions) {
+                if (!performanceSuggestions) {
+                    this.showError('performance', 'Performance suggestions not available');
+                    return;
+                }
+                
+                // Set content in the performance suggestions section
+                $('.performance-suggestions-content').html(this.formatAnalysisText(performanceSuggestions));
+                
+                // Extract optimization changes (this is a simplified example)
+                const optimizationList = $('#optimizationList');
+                optimizationList.empty();
+                
+                // Extract potential optimization changes from the text
+                const lines = performanceSuggestions.split('\n');
+                let optimizationsFound = false;
+                
+                lines.forEach(line => {
+                    // Look for lines that might describe optimizations
+                    if (line.match(/improv(e|ing|ed)|optimiz(e|ing|ed)|better|faster|efficien(t|cy)|add(ed|ing)?|remov(e|ing|ed)|replac(e|ing|ed)/i)) {
+                        // Determine severity based on keywords
+                        let severityClass = 'severity-low';
+                        if (line.match(/critical|significant|essential|important|high impact/i)) {
+                            severityClass = 'severity-high';
+                        } else if (line.match(/moderate|recommended|should|could improve/i)) {
+                            severityClass = 'severity-medium';
+                        }
+                        
+                        optimizationList.append(`
+                            <li class="list-group-item optimization-item ${severityClass}">
+                                ${line}
+                            </li>
+                        `);
+                        optimizationsFound = true;
+                    }
+                });
+                
+                if (!optimizationsFound) {
+                    optimizationList.append(`
+                        <li class="list-group-item text-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            No optimization changes needed. The query appears to be well-structured.
+                        </li>
+                    `);
+                }
+            },
+            
+            // Show error in a specific section
+            showError: function(section, errorMessage) {
+                // Update the badge
+                $(`#${section}StatusBadge`)
+                    .removeClass('bg-success')
+                    .addClass('bg-danger')
+                    .text('Error');
+                
+                // Show error message in the content area
+                $(`.${section}-analysis-content, .${section}-check-content, .${section}-suggestions-content`).html(`
+                    <div class="agent-error">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-exclamation-triangle text-warning me-2"></i>${errorMessage}</span>
+                            <button class="btn btn-sm btn-outline-warning agent-retry-btn">Retry</button>
+                        </div>
+                    </div>
+                `);
+            },
+            
+            // Format analysis text with highlighting
+            formatAnalysisText: function(text) {
+                if (!text) return '';
+                
+                // Replace newlines with <br>
+                text = text.replace(/\n/g, '<br>');
+                
+                // Highlight important terms
+                text = text.replace(/relevant|important|key|significant|useful|needed|required/gi, 
+                                    '<span class="text-primary fw-bold">$&</span>');
+                
+                return text;
+            },
+            
+            // Generate random processing time for demo
+            getRandomTime: function() {
+                return (Math.random() * 0.5 + 0.1).toFixed(1) + 's';
+            }
+        };
+        
+        // Save query to history
+        function saveQueryToHistory(query) {
+            // Get existing history
+            let history = JSON.parse(localStorage.getItem('queryHistory') || '[]');
+            
+            // Add new query if not a duplicate
+            if (!history.includes(query)) {
+                // Add to the beginning
+                history.unshift(query);
+                
+                // Keep only the latest 10
+                if (history.length > 10) {
+                    history = history.slice(0, 10);
+                }
+                
+                // Save back to localStorage
+                localStorage.setItem('queryHistory', JSON.stringify(history));
+                
+                // Update dropdown
+                updateQueryHistoryDropdown(history);
+            }
+        }
+        
+        // Update query history dropdown
+        function updateQueryHistoryDropdown(history) {
+            const historyDropdown = $('#queryHistory');
+            
+            // Remove existing items
+            historyDropdown.find('.query-history-item').parent().remove();
+            
+            // Add divider if still present
+            if (historyDropdown.find('.dropdown-divider').length === 0) {
+                historyDropdown.append('<li><hr class="dropdown-divider"></li>');
+            }
+            
+            // Add clear button if not present
+            if (historyDropdown.find('#clearHistory').length === 0) {
+                historyDropdown.append('<li><a class="dropdown-item" href="#" id="clearHistory">Clear History</a></li>');
+            }
+            
+            // Add new items
+            if (history.length > 0) {
+                // Remove "No recent queries" message if present
+                historyDropdown.find('.text-muted').parent().remove();
+                
+                history.forEach(query => {
+                    historyDropdown.prepend(`<li><a class="dropdown-item query-history-item" href="#">${query}</a></li>`);
+                });
+            } else {
+                historyDropdown.prepend('<li><span class="dropdown-item text-muted">No recent queries</span></li>');
+            }
+        }
+        
+        // Display results page
+        function displayResultsPage(page) {
+            if (!allResults || allResults.length === 0) return;
+            
+            const resultsBody = $('#resultsBody');
+            resultsBody.empty();
+            
+            const perPage = parseInt($('#resultsPerPage').val());
+            const startIndex = (page - 1) * perPage;
+            const endIndex = Math.min(startIndex + perPage, allResults.length);
+            
+            // Apply search filter if needed
+            const searchTerm = $('#resultsSearch').val().toLowerCase();
+            let filteredResults = allResults;
+            
+            if (searchTerm) {
+                filteredResults = allResults.filter(row => {
+                    return Object.values(row).some(value => 
+                        String(value).toLowerCase().includes(searchTerm)
+                    );
+                });
+            }
+            
+            // Update pagination and counts
+            setupResultsPagination(page, filteredResults.length);
+            
+            const showing = filteredResults.length > 0 ? 
+                `${startIndex + 1}-${Math.min(endIndex, filteredResults.length)}` : 
+                "0";
+            $('#resultsShowing').text(showing);
+            $('#resultsTotal').text(filteredResults.length);
+            
+            // Display no results message if needed
+            if (filteredResults.length === 0) {
+                $('#noResults').show();
+                $('#noResultsMessage').text('No matching results found.');
+                return;
+            } else {
+                $('#noResults').hide();
+            }
+            
+            // Display the current page
+            const pageResults = filteredResults.slice(startIndex, endIndex);
+            const columns = Object.keys(pageResults[0]);
+            
+            pageResults.forEach(row => {
+                const tr = document.createElement('tr');
+                
+                columns.forEach(column => {
+                    const td = document.createElement('td');
+                    td.innerText = row[column] !== null ? row[column] : 'NULL';
+                    tr.appendChild(td);
+                });
+                
+                resultsBody.append(tr);
+            });
+        }
+        
+        // Set up pagination controls
+        function setupResultsPagination(currentPage, totalItems) {
+            const pagination = $('#resultsPagination');
+            pagination.empty();
+            
+            const perPage = parseInt($('#resultsPerPage').val());
+            const totalPages = Math.ceil(totalItems / perPage);
+            
+            // Previous button
+            pagination.append(`
+                <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                    <a class="page-link" href="#">Previous</a>
+                </li>
+            `);
+            
+            // Page numbers
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                pagination.append(`
+                    <li class="page-item ${i === currentPage ? 'active' : ''}">
+                        <a class="page-link" href="#">${i}</a>
+                    </li>
+                `);
+            }
+            
+            // Next button
+            pagination.append(`
+                <li class="page-item ${currentPage >= totalPages ? 'disabled' : ''}">
+                    <a class="page-link" href="#">Next</a>
+                </li>
+            `);
+        }
+        
+        // Sort results by column
+        function sortResults(column) {
+            if (!allResults || allResults.length === 0) return;
+            
+            // Check current sort direction
+            const headerElement = $(`#resultsHeader th:contains(${column})`);
+            const currentDir = headerElement.attr('data-sort') || 'asc';
+            const newDir = currentDir === 'asc' ? 'desc' : 'asc';
+            
+            // Update header
+            $('#resultsHeader th').removeAttr('data-sort');
+            headerElement.attr('data-sort', newDir);
+            
+            // Sort the results
+            allResults.sort((a, b) => {
+                if (a[column] === b[column]) return 0;
+                
+                if (newDir === 'asc') {
+                    return a[column] < b[column] ? -1 : 1;
+                } else {
+                    return a[column] > b[column] ? -1 : 1;
+                }
+            });
+            
+            // Re-display current page
+            const activePage = parseInt($('#resultsPagination .page-item.active .page-link').text());
+            displayResultsPage(activePage);
+        }
+        
+        // Update agent analysis
+        function updateAgentAnalysis(data) {
+            if (data.agent_analysis) {
+                lastAgentAnalysis = data.agent_analysis;
+                AgentAnalysisManager.initializeAnalysis(data.agent_analysis);
+            } else {
+                $('#agentAnalysisCard').hide();
+            }
+        }
+    </script>
+</body>
+</html>

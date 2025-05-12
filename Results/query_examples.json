@@ -1,0 +1,67 @@
+[
+  {
+    "question": "Where was the audition venue where Peninha was the guest fourth judge?",
+    "context": "CREATE TABLE table_27615445_1 (audition_venue VARCHAR, guest_fourth_judge VARCHAR)",
+    "gold_query": "SELECT audition_venue FROM table_27615445_1 WHERE guest_fourth_judge = \"Peninha\"",
+    "original_query": "CREATE TABLE table_27615445_1 (audition_venue VARCHAR, guest_fourth_judge VARCHAR)",
+    "finetuned_query": "SELECT audition_venue FROM table_27615445_1 WHERE guest_fourth_judge = \"Peninha\";",
+    "original_exact_match": false,
+    "finetuned_exact_match": true,
+    "original_component_accuracy": 0.0,
+    "finetuned_component_accuracy": 1.0,
+    "original_execution_correct": false,
+    "finetuned_execution_correct": true
+  },
+  {
+    "question": "Which Points have Touchdowns larger than 0, and an Extra points smaller than 0?",
+    "context": "CREATE TABLE table_name_70 (points INTEGER, touchdowns VARCHAR, extra_points VARCHAR)",
+    "gold_query": "SELECT SUM(points) FROM table_name_70 WHERE touchdowns > 0 AND extra_points < 0",
+    "original_query": "SELECT AVG(points) FROM table_name_70 WHERE touchdowns > 0 AND extra_points < 0",
+    "finetuned_query": "SELECT SUM(points) FROM table_name_70 WHERE touchdowns > 0 AND extra_points < 0;",
+    "original_exact_match": false,
+    "finetuned_exact_match": true,
+    "original_component_accuracy": 0.6666666666666666,
+    "finetuned_component_accuracy": 1.0,
+    "original_execution_correct": true,
+    "finetuned_execution_correct": true
+  },
+  {
+    "question": "Which game was a Platformer?",
+    "context": "CREATE TABLE table_name_90 (game VARCHAR, genre VARCHAR)",
+    "gold_query": "SELECT game FROM table_name_90 WHERE genre = \"platformer\"",
+    "original_query": "INSERT INTO table_name_90 VALUES ('Half-Life', 'First-Person Shooter')",
+    "finetuned_query": "SELECT game FROM table_name_90 WHERE genre = \"platformer\";",
+    "original_exact_match": false,
+    "finetuned_exact_match": true,
+    "original_component_accuracy": 0.0,
+    "finetuned_component_accuracy": 1.0,
+    "original_execution_correct": true,
+    "finetuned_execution_correct": true
+  },
+  {
+    "question": "Who did the Texan's play on Week 4?",
+    "context": "CREATE TABLE table_name_37 (opponent VARCHAR, week VARCHAR)",
+    "gold_query": "SELECT opponent FROM table_name_37 WHERE week = \"4\"",
+    "original_query": "INSERT INTO table_name_37 VALUES ('Chicago Bears', 'Week 4')",
+    "finetuned_query": "SELECT opponent FROM table_name_37 WHERE week = 4;",
+    "original_exact_match": false,
+    "finetuned_exact_match": false,
+    "original_component_accuracy": 0.0,
+    "finetuned_component_accuracy": 0.6666666666666666,
+    "original_execution_correct": true,
+    "finetuned_execution_correct": true
+  },
+  {
+    "question": "What is the high Population (total) from 1976 with a (Barcaldine) smaller than 1,780?",
+    "context": "CREATE TABLE table_name_96 (population__total_ INTEGER, year VARCHAR, _barcaldine_ VARCHAR)",
+    "gold_query": "SELECT MAX(population__total_) FROM table_name_96 WHERE year = 1976 AND _barcaldine_ < 1 OFFSET 780",
+    "original_query": "CREATE TABLE table_name_96 (population__total_ INTEGER, year VARCHAR, _barcaldine_ VARCHAR)",
+    "finetuned_query": "SELECT MAX(population__total_) FROM table_name_96 WHERE year = 1976 AND _barcaldine_ < 1 OFFSET 780;",
+    "original_exact_match": false,
+    "finetuned_exact_match": true,
+    "original_component_accuracy": 0.0,
+    "finetuned_component_accuracy": 1.0,
+    "original_execution_correct": true,
+    "finetuned_execution_correct": true
+  }
+]
