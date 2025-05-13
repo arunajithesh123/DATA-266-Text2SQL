@@ -35,6 +35,9 @@ The system consists of these main components:
 https://endpoints.huggingface.co/arunajithesh/endpoints/mistral-7b-sql-nkl
 https://ys1youl289g9bhaw.us-east4.gcp.endpoints.huggingface.cloud
 
+## Model Drive link
+https://drive.google.com/drive/folders/12-usin2XqjgMuC02YddkXk2X14qLvIXg?usp=sharing
+
 ## Getting Started
 
 ### Prerequisites
